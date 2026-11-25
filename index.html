@@ -1,53 +1,58 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Reg Hukum</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #f5f6fa;
-        }
-
-        .app-container {
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .app-frame {
-            position: absolute;
-            top: -48px;
-            left: 0;
-            width: 100%;
-            height: calc(100% + 48px);
-            border: none;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register Produk Hukum</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0369a1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%96%3C/text%3E%3C/svg%3E">
+<style>
+  html, body { height: 100%; margin: 0; background: #f1f5f9; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #app { position: fixed; inset: 0; width: 100%; height: 100%; height: 100dvh; border: 0; background: #f1f5f9; }
+  #muat { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #475569; padding: 16px; text-align: center; }
+  .spin { width: 32px; height: 32px; border: 3px solid #cbd5e1; border-top-color: #0369a1; border-radius: 50%; animation: putar .9s linear infinite; }
+  @keyframes putar { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation-duration: 3s; } }
+  #galat { display: none; max-width: 30rem; line-height: 1.5; }
+  code { background: #e2e8f0; padding: 1px 5px; border-radius: 4px; }
+  a { color: #0369a1; }
+</style>
 </head>
-
 <body>
+<div id="muat" role="status">
+  <div class="spin" aria-hidden="true"></div>
+  <p id="teks">Memuat aplikasi...</p>
+  <div id="galat"></div>
+</div>
+<iframe id="app" title="Register Produk Hukum" allow="clipboard-write" referrerpolicy="no-referrer" hidden></iframe>
+<noscript><p style="padding:16px">Aplikasi ini memerlukan JavaScript. Aktifkan JavaScript di browser Anda.</p></noscript>
 
-    <div class="app-container">
-        <iframe
-            class="app-frame"
-            src="https://script.google.com/macros/s/AKfycbwEhFzEWVpgL_9Mad3oMtNXPpkuwLZDY361iA5Cbh9Y-zJOFitMbPMqNKtTMqHzA8As/exec"
-            allow="clipboard-read; clipboard-write"
-            allowfullscreen>
-        </iframe>
-    </div>
+<script>
+  // GANTI dengan URL aplikasi web Anda: di Apps Script buka Deploy > Kelola deployment,
+  // lalu salin "URL aplikasi web" (berakhiran /exec).
+  const URL_APLIKASI = 'GANTI_DENGAN_URL_EXEC';
 
+  const f = document.getElementById('app'), muat = document.getElementById('muat'),
+        galat = document.getElementById('galat'), teks = document.getElementById('teks');
+  const valid = /^https:\/\/script\.google\.com\/(a\/macros\/[\w.-]+|macros)\/s\/[\w-]+\/exec$/.test(URL_APLIKASI);
+
+  function tampilGalat(html) {
+    document.querySelector('.spin').style.display = 'none';
+    teks.style.display = 'none';
+    galat.style.display = 'block';
+    galat.innerHTML = html;
+  }
+
+  if (!valid) {
+    tampilGalat('<strong>URL aplikasi belum diisi.</strong><br>Buka file <code>index.html</code> di GitHub, ganti <code>GANTI_DENGAN_URL_EXEC</code> dengan URL aplikasi web Anda (berakhiran <code>/exec</code>), lalu simpan.');
+  } else {
+    const batas = setTimeout(() => {
+      tampilGalat('Aplikasi belum merespons.<br><a href="' + URL_APLIKASI + '">Buka langsung</a> atau muat ulang halaman ini.');
+    }, 20000);
+    f.addEventListener('load', () => { clearTimeout(batas); f.hidden = false; muat.style.display = 'none'; });
+    f.src = URL_APLIKASI;
+  }
+</script>
 </body>
 </html>
